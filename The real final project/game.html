@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whack-a-Mole Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f3f3f3;
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        .game-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 10px;
+            justify-items: center;
+            margin: 20px auto;
+            width: 60%;
+            max-width: 600px;
+        }
+
+        .hole {
+            width: 100px;
+            height: 100px;
+            background-color: #95a5a6;
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .mole {
+            width: 80px;
+            height: 80px;
+            background-color: #e74c3c;
+            border-radius: 50%;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: none;
+        }
+
+        .scoreboard {
+            margin-top: 20px;
+            font-size: 20px;
+        }
+
+        .game-over {
+            margin-top: 30px;
+            font-size: 30px;
+            color: #e74c3c;
+        }
+
+        .reset-btn {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .reset-btn:hover {
+            background-color: #34495e;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Whack-a-Mole Game</h1>
+    <div class="scoreboard">
+        Score: <span id="score">0</span>
+    </div>
+    
+    <div class="game-container">
+        <div class="hole" id="hole1">
+            <div class="mole" id="mole1"></div>
+        </div>
+        <div class="hole" id="hole2">
+            <div class="mole" id="mole2"></div>
+        </div>
+        <div class="hole" id="hole3">
+            <div class="mole" id="mole3"></div>
+        </div>
+        <div class="hole" id="hole4">
+            <div class="mole" id="mole4"></div>
+        </div>
+        <div class="hole" id="hole5">
+            <div class="mole" id="mole5"></div>
+        </div>
+        <div class="hole" id="hole6">
+            <div class="mole" id="mole6"></div>
+        </div>
+        <div class="hole" id="hole7">
+            <div class="mole" id="mole7"></div>
+        </div>
+        <div class="hole" id="hole8">
+            <div class="mole" id="mole8"></div>
+        </div>
+        <div class="hole" id="hole9">
+            <div class="mole" id="mole9"></div>
+        </div>
+    </div>
+
+    <div class="game-over" id="gameOver" style="display: none;">
+        Game Over! Your score is <span id="finalScore"></span>.
+    </div>
+    
+    <button class="reset-btn" id="resetBtn" style="display: none;">Play Again</button>
+
+    <script>
+        let score = 0;
+        let gameOver = false;
+        let moles = document.querySelectorAll('.mole');
+        let holes = document.querySelectorAll('.hole');
+        let scoreDisplay = document.getElementById('score');
+        let gameOverDisplay = document.getElementById('gameOver');
+        let finalScoreDisplay = document.getElementById('finalScore');
+        let resetBtn = document.getElementById('resetBtn');
+        let gameTimer; // Declare gameTimer for storing timeout ID
+        
+        // Randomly show a mole in a hole
+        function showMole() {
+            if (gameOver) return;
+
+            let randomHoleIndex = Math.floor(Math.random() * holes.length);
+            let randomMoleIndex = Math.floor(Math.random() * moles.length);
+
+            // Make sure mole is not already visible
+            if (moles[randomMoleIndex].style.display === "block") {
+                showMole();
+                return;
+            }
+
+            // Hide all moles first
+            moles.forEach(mole => mole.style.display = "none");
+
+            // Show random mole
+            moles[randomMoleIndex].style.display = "block";
+            holes[randomHoleIndex].appendChild(moles[randomMoleIndex]);
+
+            // Set timeout to hide mole after 1 second
+            setTimeout(() => {
+                moles[randomMoleIndex].style.display = "none";
+                showMole();
+            }, 1000);
+        }
+
+        // Whack a mole
+        moles.forEach(mole => {
+            mole.addEventListener('click', () => {
+                if (!gameOver) {
+                    score++;
+                    scoreDisplay.textContent = score;
+                    mole.style.display = "none";
+                }
+            });
+        });
+
+        // Start the game
+        function startGame() {
+            score = 0;
+            gameOver = false;
+            scoreDisplay.textContent = score;
+            gameOverDisplay.style.display = "none";
+            resetBtn.style.display = "none";
+
+            // Set timeout to end the game after 10 seconds
+            clearTimeout(gameTimer);  // Clear previous timeout if any
+            gameTimer = setTimeout(endGame, 10000);  // Start the timeout to end the game after 10 seconds
+
+            showMole();
+        }
+
+        // End the game
+        function endGame() {
+            gameOver = true;
+            finalScoreDisplay.textContent = score;
+            gameOverDisplay.style.display = "block";
+            resetBtn.style.display = "block";
+        }
+
+        // Reset button
+        resetBtn.addEventListener('click', () => {
+            startGame();
+        });
+
+        // Start the game immediately
+        startGame();
+    </script>
+<br>
+<br>    
+<br>
+<a href="scratchpage.html">Scratch Page: Fly-Fishing</a> 
+</body>
+</html>
